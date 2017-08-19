@@ -22,7 +22,7 @@ var devPaths = {
   css: 'src/css/',
   scripts: 'src/js/',
   images: 'src/img/*',
-  fonts: 'src/fonts/GT_Walsheim/',
+  fonts: 'src/fonts/',
   html: 'src/',
   footerFolder: 'src/',
   footerTpl: 'src/*.html'
@@ -32,7 +32,7 @@ var distPaths = {
   css: 'dist/css/',
   scripts: 'dist/js/',
   images: 'dist/img/',
-  fonts: 'dist/fonts/GT_Walsheim/',
+  fonts: 'dist/fonts/',
   html: 'dist/',
   footerFolder: 'dist/'
 }
@@ -81,13 +81,13 @@ gulp.task('bowerScripts', function () {
     .pipe(gulp.dest(devPaths.footerFolder))
 })
 // Copy-paste fontawesome
-gulp.task('fontAwesome', function() {
-  return gulp.src(devPaths.bowerFolder + 'font-awesome/fonts/*.{woff,woff2}')
+gulp.task('fonts', function() {
+  return gulp.src(devPaths.bowerFolder + '**/*.{otf,ttf,woff,woff2}')
     .pipe(gulp.dest(devPaths.fonts))
 })
 // Bower tasks
 gulp.task('bower', function(callback) {
-  runSequence('bowerStyles', 'bowerScripts', 'fontAwesome',
+  runSequence('bowerStyles', 'bowerScripts', 'fonts',
     callback
   )
 })
@@ -131,7 +131,7 @@ gulp.task('images', function() {
 })
 // Copy-paste fonts
 gulp.task('fonts', function() {
-  return gulp.src(devPaths.fonts + '*.{otf,woff,woff2}')
+  return gulp.src(devPaths.fonts + '*.{ttf,otf,woff,woff2}')
   .pipe(gulp.dest(distPaths.fonts))
 })
 
