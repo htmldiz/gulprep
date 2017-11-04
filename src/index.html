@@ -5,24 +5,36 @@
 	<title>Document</title>
 	<meta content="width=device-width, initial-scale=1.0" name="viewport">
 	<!-- build:css css/style.css -->
-	<!-- bower:css -->
+	<!-- rewritedep:css -->
 	<link rel="stylesheet" href="../node_modules/font-awesome/css/font-awesome.css" />
 	<link rel="stylesheet" href="../node_modules/bootstrap/dist/css/bootstrap.css" />
-	<!-- endbower -->
+	<!-- endrewritedep -->
 	<link rel="stylesheet" href="css/npmdep.css">
 	<link rel="stylesheet" href="css/style.css">
 	<!-- endbuild -->
 </head>
 <body>
-	
+	<div class="container">
+		<div class="h1 text-center">Hello</div>
+	</div>
+
+	<div id="draggable" class="ui-widget-content">
+	  <p>Drag me to my target</p>
+	</div>
+	 
+	<div id="droppable" class="ui-widget-header">
+	  <p>Drop here</p>
+	</div>
 	<!-- build:js js/all.js -->
-	<!-- bower:js -->
+	<!-- rewritedep:js -->
 	<script src="../node_modules/jquery/dist/jquery.js"></script>
+	<script src="../node_modules/jquery-ui/jquery-ui.js"></script>
 	<script src="../node_modules/popper.js/dist/umd/popper.js"></script>
 	<script src="../node_modules/tooltip.js/dist/umd/tooltip.js"></script>
 	<script src="../node_modules/bootstrap/dist/js/bootstrap.js"></script>
-	<!-- endbower -->
+	<!-- endrewritedep -->
 	<script src="js/modernizr-touchevents.js"></script>
+	<script src="js/script.js"></script>
 	<!-- endbuild -->
 </body>
 </html>

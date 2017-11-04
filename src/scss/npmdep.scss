@@ -4,12 +4,13 @@ $grid-breakpoints: (
   md: 768px,
   lg: 992px,
   xl: 1200px,
-  xxl: 1300px
+  xxl: 1300px,
+  xxls: 1500px
 ) !default;
-$container-max-widths: (  sm: 540px,  md: 720px,  lg: 960px,  xl: 1140px, xxl: 1200px);
+$container-max-widths: (  sm: 540px,  md: 720px,  lg: 960px,  xl: 1140px, xxl: 1200px, xxls: 1470px);
 $grid-gutter-widths: (xs: 20px, sm: 30px);
-// bower:scss
+// rewritedep:scss
 @import "../../node_modules/font-awesome/scss/font-awesome.scss";
 @import "../../node_modules/bootstrap/scss/bootstrap.scss";
-// endbower
+// endrewritedep
 // Automatically injected Bower dependencies via wiredep (never manually edit this block)

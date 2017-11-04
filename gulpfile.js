@@ -13,7 +13,7 @@ var sass = require('gulp-sass')
 var sourcemaps = require('gulp-sourcemaps')
 var uglify = require('gulp-uglify')
 var useref = require('gulp-useref')
-var wiredep = require('./helpfilegulp/wiredep/wiredep').stream
+var rewritedep = require('./helpfilegulp/rewritedep/rewritedep').stream
 var packageFile = require('./package.json')
 var flatten = require('gulp-flatten')
 var file = require('gulp-file')
@@ -85,7 +85,7 @@ gulp.task('sass', function() {
 // })
 gulp.task('npmdepStyles', function () {
   return gulp.src(devPaths.allCss)
-    .pipe(wiredep())
+    .pipe(rewritedep())
     .pipe(gulp.dest(devPaths.scss))
 })
 // Automatically inject js
@@ -100,7 +100,7 @@ gulp.task('npmdepStyles', function () {
 // })
 gulp.task('npmdepScripts', function () {
   return gulp.src(devPaths.footerTpl)
-    .pipe(wiredep())
+    .pipe(rewritedep())
     .pipe(gulp.dest(devPaths.footerFolder))
 })
 
@@ -166,7 +166,7 @@ gulp.task('move_css', function() {
 
 //Default task - dev
 gulp.task('default', function(callback) {
-  runSequence(['sass', 'browserSync'], 'watch',
+  runSequence(['npmdep','sass', 'browserSync'], 'watch',
     callback
   )
 })

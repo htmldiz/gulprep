@@ -1,12 +1,12 @@
 var regex = {
   block: {
-    '//': /(([ \t]*)\/\/\s*bower:*(\S*))(\n|\r|.)*?(\/\/\s*endbower)/gi
+    '//': /(([ \t]*)\/\/\s*rewritedep:*(\S*))(\n|\r|.)*?(\/\/\s*endrewritedep)/gi
   }
 };
 
 module.exports = {
   html: {
-    block: /(([ \t]*)<!--\s*bower:*(\S*)\s*-->)(\n|\r|.)*?(<!--\s*endbower\s*-->)/gi,
+    block: /(([ \t]*)<!--\s*rewritedep:*(\S*)\s*-->)(\n|\r|.)*?(<!--\s*endrewritedep\s*-->)/gi,
     detect: {
       js: /<script.*src=['"]([^'"]+)/gi,
       css: /<link.*href=['"]([^'"]+)/gi
@@ -30,7 +30,7 @@ module.exports = {
   },
 
   jade: {
-    block: /(([ \t]*)\/\/-?\s*bower:*(\S*))(\n|\r|.)*?(\/\/-?\s*endbower)/gi,
+    block: /(([ \t]*)\/\/-?\s*rewritedep:*(\S*))(\n|\r|.)*?(\/\/-?\s*endrewritedep)/gi,
     detect: {
       js: /script\(.*src=['"]([^'"]+)/gi,
       css: /link\(.*href=['"]([^'"]+)/gi
@@ -42,7 +42,7 @@ module.exports = {
   },
 
   pug: {
-    block: /(([ \t]*)\/\/-?\s*bower:*(\S*))(\n|\r|.)*?(\/\/-?\s*endbower)/gi,
+    block: /(([ \t]*)\/\/-?\s*rewritedep:*(\S*))(\n|\r|.)*?(\/\/-?\s*endrewritedep)/gi,
     detect: {
       js: /script\(.*src=['"]([^'"]+)/gi,
       css: /link\(.*href=['"]([^'"]+)/gi
@@ -54,7 +54,7 @@ module.exports = {
   },
 
   slim: {
-    block: /(([ \t]*)\/!?\s*bower:(\S*))(\n|\r|.)*?(\/!?\s*endbower)/gi,
+    block: /(([ \t]*)\/!?\s*rewritedep:(\S*))(\n|\r|.)*?(\/!?\s*endrewritedep)/gi,
     detect: {
       js: /script.*src=['"]([^'"]+)/gi,
       css: /link.*href=['"]([^'"]+)/gi
@@ -118,7 +118,7 @@ module.exports = {
   },
 
   yaml: {
-    block: /(([ \t]*)#\s*bower:*(\S*))(\n|\r|.)*?(#\s*endbower)/gi,
+    block: /(([ \t]*)#\s*rewritedep:*(\S*))(\n|\r|.)*?(#\s*endrewritedep)/gi,
     detect: {
       js: /-\s(.+js)/gi,
       css: /-\s(.+css)/gi
@@ -130,7 +130,7 @@ module.exports = {
   },
 
   haml: {
-    block: /(([ \t]*)-#\s*bower:*(\S*))(\n|\r|.)*?(-#\s*endbower)/gi,
+    block: /(([ \t]*)-#\s*rewritedep:*(\S*))(\n|\r|.)*?(-#\s*endrewritedep)/gi,
     detect: {
       js: /\%script\{.*src:['"]([^'"]+)/gi,
       css: /\%link\{.*href:['"]([^'"]+)/gi
