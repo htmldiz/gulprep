@@ -13,11 +13,14 @@ var sass = require('gulp-sass')
 var sourcemaps = require('gulp-sourcemaps')
 var uglify = require('gulp-uglify')
 var useref = require('gulp-useref')
-var wiredep = require('wiredep').stream
-
+var wiredep = require('./helpfilegulp/wiredep/wiredep').stream
+var packageFile = require('./package.json')
+var flatten = require('gulp-flatten')
+var file = require('gulp-file')
+var foreach = require("gulp-foreach");
 var devPaths = {
-  bowerFolder: 'bower_components/',
-  allCss: 'src/scss/bower.scss',
+  nodeFolder: 'node_modules/',
+  allCss: 'src/scss/npmdep.scss',
   scss: 'src/scss/',
   css: 'src/css/',
   scripts: 'src/js/',
@@ -47,7 +50,7 @@ gulp.task('browserSync', function() {
   browserSync({
     server: {
       baseDir: "src/",
-      routes: {"/bower_components": "bower_components"}
+      routes: {"/node_modules": "node_modules"}
     }
   })
 })
@@ -68,26 +71,52 @@ gulp.task('sass', function() {
       stream: true
     }))
 })
-// Automatically inject Less and Sass Bower dependencies
-gulp.task('bowerStyles', function () {
+// Automatically inject Less and Sass npmdep dependencies
+// gulp.task('npmdepStyles', function () {
+//   dependenciesLength = packageFile.dependencies.length;
+//   dependencies = packageFile.dependencies;
+//   for (var index in dependencies) {
+//     console.log(devPaths.nodeFolder+index+' ');
+//     gulp.src(devPaths.nodeFolder+index+'**/scss/*.{sass,scss}')
+//     .pipe(foreach(function(content, file) {
+//     }))
+//     .pipe(gulp.dest(devPaths.scss))
+//   }
+// })
+gulp.task('npmdepStyles', function () {
   return gulp.src(devPaths.allCss)
     .pipe(wiredep())
     .pipe(gulp.dest(devPaths.scss))
 })
 // Automatically inject js
-gulp.task('bowerScripts', function () {
+// gulp.task('npmdepScripts', function () {
+//   dependenciesLength = packageFile.dependencies.length;
+//   dependencies = packageFile.dependencies;
+//   for (var index in dependencies) {
+//     gulp.src(devPaths.nodeFolder+index+'**/dist/'+index+'.{.min.js}')
+//     .pipe(flatten())
+//     .pipe(gulp.dest(devPaths.footerFolder))
+//   }
+// })
+gulp.task('npmdepScripts', function () {
   return gulp.src(devPaths.footerTpl)
     .pipe(wiredep())
     .pipe(gulp.dest(devPaths.footerFolder))
 })
+
 // Copy-paste fontawesome
 gulp.task('fonts', function() {
-  return gulp.src(devPaths.bowerFolder + '**/*.{otf,ttf,woff,woff2}')
+  dependenciesLength = packageFile.dependencies.length;
+  dependencies = packageFile.dependencies;
+  for (var index in dependencies) {
+    gulp.src(devPaths.nodeFolder+index+'**/fonts/*.{otf,ttf,woff,woff2}')
+    .pipe(flatten())
     .pipe(gulp.dest(devPaths.fonts))
+  }
 })
-// Bower tasks
-gulp.task('bower', function(callback) {
-  runSequence('bowerStyles', 'bowerScripts', 'fonts',
+// npmdep tasks
+gulp.task('npmdep', function(callback) {
+  runSequence('npmdepStyles', 'npmdepScripts', 'fonts',
     callback
   )
 })
@@ -96,7 +125,7 @@ gulp.task('watch', function() {
   gulp.watch(devPaths.scss + '**/*.scss', ['sass'])
   gulp.watch(devPaths.scripts + '**/*.js', browserSync.reload)
   gulp.watch(devPaths.html + '**/*.html', browserSync.reload)
-  gulp.watch(['bower.json'], ['bower'])
+  gulp.watch(['package.json'], ['npmdep'])
 })
 
 
@@ -129,11 +158,6 @@ gulp.task('images', function() {
     ]))
     .pipe(gulp.dest(distPaths.images))
 })
-// Copy-paste fonts
-gulp.task('fonts', function() {
-  return gulp.src(devPaths.fonts + '*.{ttf,otf,woff,woff2}')
-  .pipe(gulp.dest(distPaths.fonts))
-})
 
 gulp.task('move_css', function() {
   return gulp.src(devPaths.css + '*.css')
@@ -142,7 +166,7 @@ gulp.task('move_css', function() {
 
 //Default task - dev
 gulp.task('default', function(callback) {
-  runSequence(['bower', 'sass', 'browserSync'], 'watch',
+  runSequence(['sass', 'browserSync'], 'watch',
     callback
   )
 })

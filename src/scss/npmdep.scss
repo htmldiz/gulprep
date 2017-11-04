@@ -9,5 +9,7 @@ $grid-breakpoints: (
 $container-max-widths: (  sm: 540px,  md: 720px,  lg: 960px,  xl: 1140px, xxl: 1200px);
 $grid-gutter-widths: (xs: 20px, sm: 30px);
 // bower:scss
+@import "../../node_modules/font-awesome/scss/font-awesome.scss";
+@import "../../node_modules/bootstrap/scss/bootstrap.scss";
 // endbower
 // Automatically injected Bower dependencies via wiredep (never manually edit this block)
