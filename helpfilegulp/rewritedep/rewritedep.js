@@ -132,7 +132,7 @@ wiredep.stream = function (opts) {
         fileType: $.path.extname(file.path).substr(1)
       };
 
-      file.contents = new Buffer(wiredep(opts));
+      file.contents = Buffer.from(wiredep(opts));
     } catch (err) {
       this.emit('error', err);
     }
