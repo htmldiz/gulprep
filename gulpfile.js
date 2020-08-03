@@ -1,24 +1,25 @@
-var autoprefixer = require('gulp-autoprefixer')
-var browserSync = require('browser-sync')
-var changed = require('gulp-changed')
-var cssnano = require('gulp-cssnano')
-var del = require('del')
-var gulp = require('gulp')
-var gulpIf = require('gulp-if')
-var imagemin = require('gulp-imagemin')
-var imageminJpegRecompress = require('imagemin-jpeg-recompress');
-var purifycss = require('gulp-purifycss');
-var runSequence = require('gulp4-run-sequence')
-var sass = require('gulp-sass')
-var sourcemaps = require('gulp-sourcemaps')
-var uglify = require('gulp-uglify')
-var useref = require('gulp-useref')
-var rewritedep = require('./helpfilegulp/rewritedep/rewritedep').stream
-var packageFile = require('./package.json')
-var flatten = require('gulp-flatten')
-var file = require('gulp-file')
-var foreach = require("gulp-foreach");
-var devPaths = {
+const autoprefixer = require('gulp-autoprefixer')
+const browserSync = require('browser-sync').create();
+const changed = require('gulp-changed')
+const cssnano = require('gulp-cssnano')
+const del = require('del')
+const gulp = require('gulp')
+const fs = require('fs')
+const gulpIf = require('gulp-if')
+const imagemin = require('gulp-imagemin')
+const imageminJpegRecompress = require('imagemin-jpeg-recompress');
+const purifycss = require('gulp-purifycss');
+const runSequence = require('gulp4-run-sequence')
+const sass = require('gulp-sass')
+const sourcemaps = require('gulp-sourcemaps')
+const uglify = require('gulp-uglify')
+const useref = require('gulp-useref')
+const rewritedep = require('./helpfilegulp/rewritedep/rewritedep').stream
+const packageFile = require('./package.json')
+const flatten = require('gulp-flatten')
+const file = require('gulp-file')
+const foreach = require("gulp-foreach");
+const devPaths = {
   nodeFolder: 'node_modules/',
   allCss: 'src/scss/npmdep.scss',
   scss: 'src/scss/',
@@ -30,7 +31,7 @@ var devPaths = {
   footerFolder: 'src/',
   footerTpl: 'src/*.html'
 }
-var distPaths = {
+const distPaths = {
   root: 'dist/',
   css: 'dist/css/',
   scripts: 'dist/js/',
@@ -39,28 +40,34 @@ var distPaths = {
   html: 'dist/',
   footerFolder: 'dist/'
 }
-var flags = {
+const flags = {
   production: false
 }
-
-// Development Tasks 
-// -----------------
-// Start browserSync server
-gulp.task('browserSync', function() {
-  browserSync({
-    server: {
-      baseDir: "src/",
-      routes: {"/node_modules": "node_modules"}
+function removeDir(path) {
+  if (fs.existsSync(path)) {
+    const files = fs.readdirSync(path)
+    if (files.length > 0) {
+      files.forEach(function(filename) {
+        var remove_obj = path + "/" + filename;
+        remove_obj = remove_obj.replace(new RegExp('//','g'),'/');
+        if (!fs.statSync(remove_obj).isDirectory()) {
+          console.log(remove_obj);
+          fs.unlinkSync(remove_obj);
+        }
+      })
     }
-  })
-})
-// Sass convert
-gulp.task('sass', function() {
+    console.log("Directory removed.");
+  } else {
+    console.log("Directory path not found.");
+  }
+  return true;
+}
+function sassChange() {
   return gulp.src(devPaths.scss + '**/*.scss')
     .pipe(gulpIf(!flags.production, sourcemaps.init()))
     .pipe(sass().on('error', sass.logError))
     .pipe(autoprefixer({ browsers: [
-        'last 2 versions', 
+        'last 2 versions',
         'android 4',
         'opera 15'] }))
     .pipe(gulpIf(!flags.production, sourcemaps.write()))
@@ -70,34 +77,14 @@ gulp.task('sass', function() {
     .pipe(browserSync.reload({
       stream: true
     }))
-})
-// Automatically inject Less and Sass npmdep dependencies
-// gulp.task('npmdepStyles', function () {
-//   dependenciesLength = packageFile.dependencies.length;
-//   dependencies = packageFile.dependencies;
-//   for (var index in dependencies) {
-//     console.log(devPaths.nodeFolder+index+' ');
-//     gulp.src(devPaths.nodeFolder+index+'**/scss/*.{sass,scss}')
-//     .pipe(foreach(function(content, file) {
-//     }))
-//     .pipe(gulp.dest(devPaths.scss))
-//   }
-// })
+}
+
 gulp.task('npmdepStyles', function () {
   return gulp.src(devPaths.allCss)
     .pipe(rewritedep())
     .pipe(gulp.dest(devPaths.scss))
 })
-// Automatically inject js
-// gulp.task('npmdepScripts', function () {
-//   dependenciesLength = packageFile.dependencies.length;
-//   dependencies = packageFile.dependencies;
-//   for (var index in dependencies) {
-//     gulp.src(devPaths.nodeFolder+index+'**/dist/'+index+'.{.min.js}')
-//     .pipe(flatten())
-//     .pipe(gulp.dest(devPaths.footerFolder))
-//   }
-// })
+
 gulp.task('npmdepScripts', function () {
   return gulp.src(devPaths.footerTpl)
     .pipe(rewritedep())
@@ -121,29 +108,35 @@ gulp.task('npmdep', function(callback) {
   )
 })
 // Watchers
-gulp.task('watch', function() {
-  gulp.watch(devPaths.scss + '**/*.scss', ['sass'])
-  gulp.watch(devPaths.scripts + '**/*.js', browserSync.reload)
-  gulp.watch(devPaths.html + '**/*.html', browserSync.reload)
-  gulp.watch(['package.json'], ['npmdep'])
-})
+function watchChange() {
+  browserSync.init({
+    server: {
+      baseDir: "src/",
+      routes: {"/node_modules": "node_modules"}
+    }
+  })
+  gulp.watch(devPaths.scss + '**/*.scss', sassChange)
+  gulp.watch(devPaths.scripts + '**/*.js').on('change', browserSync.reload);
+  gulp.watch(devPaths.html + '**/*.html').on('change', browserSync.reload);
+  // gulp.watch(['package.json'], ['npmdep'])
+}
 
 
 // Production Tasks
 // -----------------
 //Clean before production
-gulp.task('clean:dist', function() {
-  return del.sync(distPaths.root);
-})
+// function clean_dist() {
+//   return removeDir(distPaths.root);
+// }
 // Contcatenation scripts
-gulp.task('useref', function() {
+function userefTask() {
   return gulp.src(devPaths.footerTpl)
     .pipe(useref())
     .pipe(gulpIf('*.js', uglify()))
     .pipe(gulpIf('*.css', cssnano()))
     .pipe(gulp.dest(distPaths.footerFolder));
-})
-// Optimizing Images 
+}
+// Optimizing Images
 gulp.task('images', function() {
   return gulp.src(devPaths.images + '*')
     .pipe(imagemin([
@@ -152,7 +145,7 @@ gulp.task('images', function() {
         loops:4,
         min: 50,
         max: 95,
-        quality:'high' 
+        quality:'high'
       }),
       imagemin.optipng()
     ]))
@@ -165,17 +158,20 @@ gulp.task('move_css', function() {
 })
 
 //Default task - dev
-gulp.task('default', function(callback) {
-  runSequence(['npmdep','sass', 'browserSync'], 'watch',
+function defaultRun(callback) {
+  runSequence(['watch'],
     callback
   )
-})
+}
 gulp.task('build', function(callback) {
-  flags.production = true
+  flags.production = true;
+  removeDir(distPaths.root);
   runSequence(
-    'clean:dist',
-    'sass',
-    ['useref', 'images', 'fonts', "move_css"],
+      userefTask,
+    sassChange,
+    ['images', 'fonts', "move_css"],
     callback
   )
 })
+exports.watch = watchChange;
+exports.default = watchChange;

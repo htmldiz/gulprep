@@ -3,3 +3,6 @@ src/css/
 bower_components/
 package-lock.json
 ./package-lock.json
+.DS_Store
+**/.DS_Store
+*/.DS_Store
