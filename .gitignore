@@ -1,8 +1,10 @@
 node_modules/
-src/css/
-bower_components/
+node_modules/*
+/src/assets/css
+/dist
+dist/*
 package-lock.json
-./package-lock.json
 .DS_Store
 **/.DS_Store
+**/package-lock.json
 */.DS_Store
